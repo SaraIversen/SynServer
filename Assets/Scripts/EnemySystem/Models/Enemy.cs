@@ -1,9 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.PackageManager;
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
-
 
 public class Enemy : MonoBehaviour
 {
@@ -68,7 +63,7 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
-        SpawnPosition = transform.position;
+        SpawnPosition = EnemySpawner.transform.position;
 
         ChangeState(IdleState);
     }

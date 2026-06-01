@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4375617786514354112}
   - component: {fileID: 2129093841324565235}
   - component: {fileID: 1106060493449418156}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Goggles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 829149352041095730}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ShootOrigin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 5344373229992958869}
   - component: {fileID: -4183735545998522993}
   - component: {fileID: 39657319896731006}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -271,7 +271,7 @@ CharacterController:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 72
   m_LayerOverridePriority: 0
   m_ProvidesContacts: 0
   m_Enabled: 1

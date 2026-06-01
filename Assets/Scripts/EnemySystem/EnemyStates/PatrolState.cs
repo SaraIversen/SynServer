@@ -42,7 +42,7 @@ public class PatrolState : IEnemyState
 
     private bool MoveTowardsPosition(Enemy enemy, Vector3 targetPos)
     {
-        Vector3 _movement = enemy.transform.forward * enemy.PatrolSpeed * Time.fixedDeltaTime;
+        Vector3 _movement = enemy.transform.forward * Mathf.Min(enemy.PatrolSpeed, (targetPos - enemy.transform.position).magnitude)  * Time.fixedDeltaTime;
 
         if (enemy.CharacterController.isGrounded)
         {

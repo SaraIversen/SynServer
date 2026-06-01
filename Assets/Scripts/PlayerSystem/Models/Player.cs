@@ -56,7 +56,7 @@ public class Player : MonoBehaviour
     /// <param name="_inputDirection"></param>
     private void Move(Vector2 inputDirection)
     {
-        Vector3 moveDirection = transform.right * inputDirection.x + transform.forward * inputDirection.y;
+        Vector3 moveDirection = (transform.right * inputDirection.x + transform.forward * inputDirection.y).normalized;
         moveDirection *= _moveSpeed * Time.fixedDeltaTime;
 
         if (_controller.isGrounded)

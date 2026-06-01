@@ -28,6 +28,8 @@ public class EnemySpawner : MonoBehaviour
         enemy.transform.position = transform.position;
         enemy.transform.rotation = transform.rotation;
 
+        enemy.ChangeState(enemy.IdleState);
+
         enemy.gameObject.SetActive(true);
 
         ServerSend.EnemyRespawned(enemy);

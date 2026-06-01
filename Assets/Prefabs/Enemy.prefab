@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2189761058209662999}
   - component: {fileID: 7120167086843243313}
   - component: {fileID: 5322644888609425491}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Enemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -135,7 +135,7 @@ MonoBehaviour:
   _minIdleTime: 1
   _maxIdleTime: 5
   CurrentHealth: 0
-  MaxHealth: 100
+  MaxHealth: 50
 --- !u!143 &5322644888609425491
 CharacterController:
   m_ObjectHideFlags: 0
@@ -149,7 +149,7 @@ CharacterController:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 72
   m_LayerOverridePriority: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 7113514781962348273}
   - component: {fileID: 26231595146145397}
   - component: {fileID: 1066037984180928608}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Goggles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
