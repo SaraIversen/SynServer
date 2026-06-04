@@ -24,16 +24,16 @@ public class Projectile : MonoBehaviour
 
     private void Start()
     {
-        ServerSend.SpawnProjectile(this, _initialMovementDirection, _thrownByPlayer);
+        ServerSend.SpawnProjectile(this, _initialMovementDirection, _initialForce, _thrownByPlayer);
 
         _rigidBody.AddForce(_initialForce);
         StartCoroutine(ExplodeAfterTime());
     }
 
-    private void FixedUpdate()
+/*    private void FixedUpdate()
     {
         ServerSend.ProjectilePosition(this);
-    }
+    }*/
 
     private void OnTriggerEnter(Collider collider)
     {
@@ -42,10 +42,6 @@ public class Projectile : MonoBehaviour
 
     private void Explode()
     {
-        if (_exploded) return;
-        _exploded = true;
-        ServerSend.ProjectileExploded(this);
-
         Collider[] colliders = Physics.OverlapSphere(transform.position, _explosionRadius);
         foreach (Collider collider in colliders)
         {
@@ -58,6 +54,10 @@ public class Projectile : MonoBehaviour
                 collider.GetComponent<Enemy>().TakeDamage(_explosionDamage);
             }
         }
+
+        if (_exploded) return;
+        _exploded = true;
+        ServerSend.ProjectileExploded(this);
 
         ProjectileManager.Instance.DestroyProjectile(Id);
     }

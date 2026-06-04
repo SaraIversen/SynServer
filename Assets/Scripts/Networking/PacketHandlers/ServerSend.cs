@@ -178,13 +178,14 @@ public static class ServerSend
         }
     }
 
-    public static void SpawnProjectile(Projectile projectile, Vector3 initialMovementDirection, int thrownByPlayer)
+    public static void SpawnProjectile(Projectile projectile, Vector3 initialMovementDirection, Vector3 initialForce, int thrownByPlayer)
     {
         using (Packet packet = new Packet((int)PacketId.spawnProjectile))
         {
             packet.Write(projectile.Id);
             packet.Write(projectile.transform.position);
             packet.Write(initialMovementDirection);
+            packet.Write(initialForce);
             packet.Write(thrownByPlayer);
 
             SendTCPDataToAll(packet);
