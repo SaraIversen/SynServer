@@ -2,7 +2,6 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -10,12 +9,12 @@ using UnityEngine;
 /// </summary>
 public class Server : IServer
 {
-    public static int MaxPlayers { get; private set; }
-    public static int TcpPort { get; private set; }
-    public static int UdpPort { get; private set; }
+    public int MaxPlayers { get; private set; }
+    public int TcpPort { get; private set; }
+    public int UdpPort { get; private set; }
 
-    public static TcpListener TcpListener { get; private set; }
-    public static UdpClient UdpListener { get; private set; }
+    public TcpListener TcpListener { get; private set; }
+    public ServerUDP ServerUDP { get; private set; }
 
 
     public bool IsRunning { get; private set; }
@@ -34,25 +33,24 @@ public class Server : IServer
         MaxPlayers = maxPlayers;
 
         TcpListener = new TcpListener(IPAddress.Any, TcpPort);
-        UdpListener = new UdpClient(UdpPort);
+        ServerUDP = new ServerUDP(new UdpClient(UdpPort));
 
         PacketRouter.InitializeServerData();
         ClientManager.Initalize(MaxPlayers);
     }
 
     /// <summary>Starts the server.</summary>
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public void Start(CancellationToken cancellationToken)
     {
         Debug.Log("SERVER: Starting server...");
 
         TcpListener.Start(); // Begins to listen for incoming TCP connection requests.
-        _ = ServerUDP.UDPReceiveLoop(cancellationToken); // Starts UDP receive loop.
-
         IsRunning = true;
 
         Console.WriteLine($"SERVER: Server started on port {TcpPort}(tcp) and {UdpPort}(udp)");
 
-        await ClientConnectionHandler.AcceptClientsAsync(TcpListener, cancellationToken);
+        _ = ClientConnectionHandler.AcceptClientsAsync(TcpListener, cancellationToken);
+        _ = ServerUDP.UDPReceiveLoop(cancellationToken); // Starts UDP receive loop.
     }
 
     public void Stop()
@@ -61,7 +59,7 @@ public class Server : IServer
         Debug.Log($"Disconnected {disconnectedClients} clients");
 
         TcpListener?.Stop();
-        UdpListener?.Dispose();
+        ServerUDP?.UdpListener?.Dispose();
 
         IsRunning = false;
     }

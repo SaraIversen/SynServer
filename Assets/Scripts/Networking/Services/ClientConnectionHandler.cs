@@ -13,7 +13,7 @@ public class ClientConnectionHandler
     {
         while (!cancellationToken.IsCancellationRequested)
         {
-            TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync();
+            TcpClient tcpClient = await tcpListener.AcceptTcpClientAsync().ConfigureAwait(false);
 
             Debug.Log($"SERVER: Incoming connection from {tcpClient.Client.RemoteEndPoint}...");
 

@@ -24,7 +24,7 @@ public class ClientUDP
     /// <param name="_packet">The packet to send.</param>
     public void SendData(Packet packet)
     {
-        ServerUDP.SendUDPData(EndPoint, packet);
+        _ = ServerManager.Server.ServerUDP.SendUDPDataAsync(EndPoint, packet);
     }
 
     /// <summary>Prepares received data to be used by the appropriate packet handler methods.</summary>

@@ -33,18 +33,18 @@ public class ClientTCP
 
     /// <summary>Sends data to the client via TCP.</summary>
     /// <param name="_packet">The packet to send.</param>
-    public void SendData(Packet _packet)
+    public async Task SendDataAsync(Packet packet)
     {
         try
         {
             if (Socket != null)
             {
-                Stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null); // Send data to server
+                await Stream.WriteAsync(packet.ToArray(), 0, packet.Length()).ConfigureAwait(false);
             }
         }
-        catch (Exception _ex)
+        catch (Exception ex)
         {
-            Debug.Log($"Error sending data to server via TCP: {_ex}");
+            Debug.Log($"Error sending data to server via TCP: {ex}");
         }
     }
 
@@ -56,7 +56,7 @@ public class ClientTCP
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                int bytesRead = await Stream.ReadAsync(ReceiveBuffer, 0, ReceiveBuffer.Length, cancellationToken);
+                int bytesRead = await Stream.ReadAsync(ReceiveBuffer, 0, ReceiveBuffer.Length, cancellationToken).ConfigureAwait(false);
                 if (bytesRead <= 0)
                 {
                     if (ClientManager.GetClientConnection(_id, out ClientConnection clientConnection))
@@ -72,9 +72,10 @@ public class ClientTCP
                 ReceivedData.Reset(HandleData(_data)); // Reset receivedData if all data was handled
             }
         }
-        catch
+        catch (Exception ex)
         {
-            //Debug.Log($"Error receiving TCP data: {_ex}");
+            Debug.LogError($"Client {_id} TCP Receive Loop Error: {ex}");
+
             if (ClientManager.GetClientConnection(_id, out ClientConnection clientConnection))
             {
                 ClientManager.Disconnect(clientConnection);
@@ -90,9 +91,8 @@ public class ClientTCP
 
         ReceivedData.ReadBytes(_data);
 
-        if (ReceivedData.UnreadLength() >= 4)
+        if (ReceivedData.UnreadLength() >= 4) // Make sure there is enough bytes to read an int (packet length)
         {
-            // If client's received data contains a packet
             _packetLength = ReceivedData.ReadInt();
             if (_packetLength <= 0)
             {
@@ -101,9 +101,9 @@ public class ClientTCP
             }
         }
 
+        // While packet contains data AND packet data length doesn't exceed the length of the packet we're reading
         while (_packetLength > 0 && _packetLength <= ReceivedData.UnreadLength())
         {
-            // While packet contains data AND packet data length doesn't exceed the length of the packet we're reading
             byte[] _packetBytes = ReceivedData.ReadBytes(_packetLength);
             ThreadManager.ExecuteOnMainThread(() =>
             {
@@ -115,9 +115,8 @@ public class ClientTCP
             });
 
             _packetLength = 0; // Reset packet length
-            if (ReceivedData.UnreadLength() >= 4)
+            if (ReceivedData.UnreadLength() >= 4) // If client's received data contains data from another packet
             {
-                // If client's received data contains another packet
                 _packetLength = ReceivedData.ReadInt();
                 if (_packetLength <= 0)
                 {
@@ -127,7 +126,7 @@ public class ClientTCP
             }
         }
 
-        if (_packetLength <= 1)
+        if (_packetLength <= 1) // There are reamining bytes but they can not be processed since we need at least 4 bytes to read the next packet's length
         {
             return true; // Reset receivedData instance to allow it to be reused
         }

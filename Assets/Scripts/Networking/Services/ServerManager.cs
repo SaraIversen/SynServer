@@ -4,7 +4,7 @@ using UnityEngine;
 public class ServerManager : MonoBehaviour
 {
     #region Instance Fields
-    private Server _server;
+    public static Server Server;
 
     [SerializeField] private int _tcpPort = 5000;
     [SerializeField] private int _udpPort = 5001;
@@ -19,14 +19,14 @@ public class ServerManager : MonoBehaviour
         _cts = new CancellationTokenSource();
         _serverToken = _cts.Token;
 
-        _server = new Server(_tcpPort, _udpPort, _maxClients);
-        _ = _server.StartAsync(_serverToken);
+        Server = new Server(_tcpPort, _udpPort, _maxClients);
+        Server.Start(_serverToken);
     }
 
     void OnDestroy()
     {
         _cts?.Cancel();
-        _server?.Stop();
+        Server?.Stop();
         _cts?.Dispose();
     }
 }

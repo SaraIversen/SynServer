@@ -5,15 +5,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public static class ServerUDP
+public class ServerUDP
 {
-    public static async Task UDPReceiveLoop(CancellationToken cancellationToken)
+    public UdpClient UdpListener { get; private set; }
+
+    public ServerUDP(UdpClient udpListener)
+    {
+        UdpListener = udpListener;
+    }
+
+    public async Task UDPReceiveLoop(CancellationToken cancellationToken)
     {
         try
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                UdpReceiveResult result = await Server.UdpListener.ReceiveAsync();
+                UdpReceiveResult result = await UdpListener.ReceiveAsync().ConfigureAwait(false);
 
                 byte[] data = result.Buffer;
                 IPEndPoint clientEndPoint = result.RemoteEndPoint;
@@ -56,13 +63,13 @@ public static class ServerUDP
     /// <summary>Sends a packet to the specified endpoint via UDP.</summary>
     /// <param name="_clientEndPoint">The endpoint to send the packet to.</param>
     /// <param name="_packet">The packet to send.</param>
-    public static void SendUDPData(IPEndPoint clientEndPoint, Packet packet)
+    public async Task SendUDPDataAsync(IPEndPoint clientEndPoint, Packet packet)
     {
         try
         {
             if (clientEndPoint != null)
             {
-                Server.UdpListener.BeginSend(packet.ToArray(), packet.Length(), clientEndPoint, null, null);
+                await UdpListener.SendAsync(packet.ToArray(), packet.Length(), clientEndPoint).ConfigureAwait(false);
             }
         }
         catch (Exception ex)

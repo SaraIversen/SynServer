@@ -10,7 +10,6 @@ using UnityEngine;
 /// </summary>
 public static class ClientManager
 {
-
     #region Instance Fields
     private static int _maxPlayers;
 

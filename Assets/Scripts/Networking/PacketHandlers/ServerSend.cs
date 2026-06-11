@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public static class ServerSend
@@ -12,7 +10,7 @@ public static class ServerSend
     {
         packet.WriteLength();
         ClientManager.GetClientConnection(toClient, out ClientConnection clientConnection);
-        clientConnection.TCP.SendData(packet);
+        _ = clientConnection.TCP.SendDataAsync(packet);
     }
 
     /// <summary>Sends a packet to a client via UDP.</summary>
@@ -33,7 +31,7 @@ public static class ServerSend
 
         foreach (ClientConnection clientConnection in ClientManager.GetAllClients())
         {
-            clientConnection.TCP.SendData(packet);
+            _ = clientConnection.TCP.SendDataAsync(packet);
         }
     }
     /// <summary>Sends a packet to all clients except one via TCP.</summary>
@@ -47,7 +45,7 @@ public static class ServerSend
         {
             if (clientConnection.Id != exceptClient)
             {
-                clientConnection.TCP.SendData(packet);
+                _ = clientConnection.TCP.SendDataAsync(packet);
             }
         }
     }
